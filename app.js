@@ -4,10 +4,25 @@ import axios from 'axios'
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form')
 
+    const usernames = []
+
     form.addEventListener('submit', async event => {
         event.preventDefault() // prevent the default behavior (the page reload)
+
         const username = document.querySelector('input').value
 
+        if (!username) {
+            alert('Enter a username')
+            return
+        }
+
+        if (usernames.includes(username)) {
+            alert('You already searched for this')
+            return
+        }
+        usernames.push(username)
+
+        console.log(usernames)
         let response
 
         try {
@@ -19,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error')
                 console.error(error.response)
             }
-
         }
     
         const createCard = data => `
@@ -73,5 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // insert the card in the container // beforeend postion after the last child
             document.querySelector('#container').insertAdjacentHTML('afterbegin', card)
         }
+
+        document.querySelector('input').value = '' // clear the input field after submit processing
     })
 })
