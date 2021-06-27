@@ -8,7 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault() // prevent the default behavior (the page reload)
         const username = document.querySelector('input').value
 
-        const response = await axios.get(`https://api.github.com/users/${username}`)
+        let response
+
+        try {
+            response = await axios.get(`https://api.github.com/users/${username}`)
+        } catch (error) {
+            if (404 === error.response.status) {
+                alert('Username not found')
+            } else {
+                alert('Error')
+                console.error(error.response)
+            }
+
+        }
     
         const createCard = data => `
             <div class="px-4 py-5 sm:px-6 -ml-4 -mt-4 border-b border-gray-200 pb-8 flex justify-between items-center flex-wrap sm:flex-no-wrap">
@@ -55,11 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `
 
-        const card = createCard(response.data)
+        if (response) {
+            const card = createCard(response.data)
 
-        // insert the card in the container // beforeend postion after the last child
-        document.querySelector('#container').insertAdjacentHTML('beforeend', card)
-    
+            // insert the card in the container // beforeend postion after the last child
+            document.querySelector('#container').insertAdjacentHTML('afterbegin', card)
+        }
     })
-
 })
